@@ -1,36 +1,39 @@
-using AutoMapper;
 using GestionITM.API.Mappings;
+using GestionITM.API.Middleware;
 using GestionITM.Domain.Interfaces;
 using GestionITM.Infrastructure;
-using GestionITM.Infrastructure.Middleware;
 using GestionITM.Infrastructure.Repositories;
 using GestionITM.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 1. Configurar la cadena de conexión
+// 1. Cadena de conexión
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Registrar el Repositorio (Inyección de Dependencias)
-// AddScoped significa: "Crea una instancia por cada petición HTTP"
+// 2. Inyección de dependencias ── Estudiante
 builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
 builder.Services.AddScoped<IEstudianteService, EstudianteService>();
+
+// 3. Inyección de dependencias ── Curso
 builder.Services.AddScoped<ICursoRepository, CursoRepository>();
 
-// AutoMapper
+// 4. Inyección de dependencias ── Profesor
+builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();
+builder.Services.AddScoped<IProfesorService, ProfesorService>();
+
+// 5. AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware global de excepciones (siempre primero en el pipeline)
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -40,5 +43,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-
 app.Run();
