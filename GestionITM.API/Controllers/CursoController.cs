@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using GestionITM.Domain.Interfaces;
-using GestionITM.Domain.Entities;
+using GestionITM.Domain.Dtos;
 
 namespace GestionITM.API.Controllers
 {
@@ -8,39 +8,39 @@ namespace GestionITM.API.Controllers
     [ApiController]
     public class CursoController : ControllerBase
     {
-        private readonly ICursoRepository _repository;
+        // Nivel 5: el controlador depende del SERVICIO, nunca del repositorio
+        private readonly ICursoService _service;
 
-        public CursoController(ICursoRepository repository)
+        public CursoController(ICursoService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         // GET: api/curso
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Curso>>> GetCursos()
+        public async Task<ActionResult<IEnumerable<CursoDto>>> GetCursos()
         {
-            var cursos = await _repository.ObtenerTodoAsync();
+            var cursos = await _service.ObtenerTodosLosCursosAsync();
             return Ok(cursos);
         }
 
         // GET: api/curso/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Curso>> GetCurso(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CursoDto>> GetCurso(int id)
         {
-            var curso = await _repository.ObtenerPorIdAsync(id);
+            var curso = await _service.ObtenerPorIdAsync(id);
             if (curso == null)
-            {
                 return NotFound(new { message = $"Curso con ID {id} no encontrado." });
-            }
+
             return Ok(curso);
         }
 
         // POST: api/curso
         [HttpPost]
-        public async Task<ActionResult> PostCurso(Curso curso)
+        public async Task<ActionResult<CursoDto>> PostCurso([FromBody] CursoCreateDto cursoCreateDto)
         {
-            await _repository.AgregarAsync(curso);
-            return CreatedAtAction(nameof(GetCurso), new { id = curso.Id }, curso);
+            var resultado = await _service.RegistrarCursoAsync(cursoCreateDto);
+            return CreatedAtAction(nameof(GetCurso), new { id = resultado.Id }, resultado);
         }
     }
 }

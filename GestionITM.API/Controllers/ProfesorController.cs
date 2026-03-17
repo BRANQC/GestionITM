@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using GestionITM.Domain.Interfaces;
 using GestionITM.Domain.Dtos;
+//using Microsoft.AspNetCore.Authentication;
+//using Microsoft.AspNetCore.Authorization;
+
 
 namespace GestionITM.API.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProfesorController : ControllerBase
     {
-        // El controlador depende del SERVICIO, nunca del repositorio directamente.
-        // (El controlador es el mesero, no el almacenista)
         private readonly IProfesorService _service;
 
         public ProfesorController(IProfesorService service)
@@ -25,12 +27,19 @@ namespace GestionITM.API.Controllers
             return Ok(profesoresDto);
         }
 
+        // GET: api/profesor/5
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ProfesorDto>> Get(int id)
+        {
+            // Si no existe lanza NotFoundException → Middleware responde 404
+            var profesor = await _service.ObtenerPorIdAsync(id);
+            return Ok(profesor);
+        }
+
         // POST: api/profesor
         [HttpPost]
         public async Task<ActionResult<ProfesorDto>> Post([FromBody] ProfesorCreateDto profesorCreateDto)
         {
-            // El servicio contiene toda la lógica de negocio y validaciones.
-            // Si algo falla, lanza una excepción que el ExceptionMiddleware captura.
             var resultado = await _service.RegistrarProfesorAsync(profesorCreateDto);
             return CreatedAtAction(nameof(Get), new { id = resultado.Id }, resultado);
         }

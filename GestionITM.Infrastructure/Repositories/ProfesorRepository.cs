@@ -34,7 +34,7 @@ namespace GestionITM.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // consulta si ya existe un email en la BD
+      
         public async Task<bool> ExisteEmailAsync(string email)
         {
             return await _context.Profesores

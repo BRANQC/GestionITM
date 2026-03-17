@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GestionITM.Domain.Dtos;
 using GestionITM.Domain.Entities;
+using GestionITM.Domain.Exceptions;
 using GestionITM.Domain.Interfaces;
-
 
 namespace GestionITM.Infrastructure.Services
 {
@@ -28,29 +28,24 @@ namespace GestionITM.Infrastructure.Services
             return _mapper.Map<IEnumerable<EstudianteDto>>(estudiantes);
         }
 
-        public async Task<bool> RegistrarEstudianteAsync(EstudianteCreateDto estudianteDto)
+        public async Task<EstudianteDto> RegistrarEstudianteAsync(EstudianteCreateDto estudianteDto)
         {
-            //Reglas de negocio para validar el estudiante Nivel 5
-            // No permitimos correos que no sean del dominio @itm.edu.co
+            // REGLA DE NEGOCIO: solo correos institucionales → 400 Bad Request
             if (!estudianteDto.Correo.EndsWith("@correo.itm.edu.co"))
-            {
-                return false; // No se permite registrar el estudiante
-            }
+                throw new BadRequestException("Solo se permiten correos institucionales (@correo.itm.edu.co).");
 
             var estudiante = _mapper.Map<Estudiante>(estudianteDto);
-            estudiante.FechaInscripcion = DateTime.UtcNow; // Asignamos la fecha de inscripción actual
+            estudiante.FechaInscripcion = DateTime.UtcNow;
 
             await _repository.AgregarAsync(estudiante);
-            return true; // Estudiante registrado exitosamente
+            return _mapper.Map<EstudianteDto>(estudiante);
         }
 
         public async Task<EstudianteDto?> ObtenerPorIdAsync(int id)
         {
             var estudiante = await _repository.ObtenerPorIdAsync(id);
             if (estudiante == null)
-            {
-                return null;
-            }
+                throw new NotFoundException($"Estudiante con ID {id} no encontrado.");
 
             return _mapper.Map<EstudianteDto>(estudiante);
         }

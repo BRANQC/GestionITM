@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace GestionITM.Domain.Dtos
 {
-    // DTO de SALIDA: lo que la API devuelve al cliente.
-    // Nota: FechaContratacion NO se expone (requisito del taller).
+ 
+    // FechaContratacion NO se expone
     public class ProfesorDto
     {
         public int Id { get; set; }

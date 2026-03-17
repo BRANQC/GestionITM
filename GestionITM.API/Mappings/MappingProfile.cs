@@ -8,13 +8,17 @@ namespace GestionITM.API.Mappings
     {
         public MappingProfile()
         {
-            // ── Estudiante ──────────────────────────────────────
+            // Estudiante
             CreateMap<Estudiante, EstudianteDto>();
             CreateMap<EstudianteCreateDto, Estudiante>();
 
-            // ── Profesor ────────────────────────────────────────
+            // Profesor
             CreateMap<Profesor, ProfesorDto>();
             CreateMap<ProfesorCreateDto, Profesor>();
+
+            // Curso
+            CreateMap<Curso, CursoDto>();
+            CreateMap<CursoCreateDto, Curso>();
         }
     }
 }

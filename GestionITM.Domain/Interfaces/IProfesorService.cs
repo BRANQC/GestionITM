@@ -10,6 +10,7 @@ namespace GestionITM.Domain.Interfaces
     public interface IProfesorService
     {
         Task<IEnumerable<ProfesorDto>> ObtenerTodosLosProfesoresAsync();
+        Task<ProfesorDto?> ObtenerPorIdAsync(int id);
         Task<ProfesorDto> RegistrarProfesorAsync(ProfesorCreateDto profesorDto);
     }
 }

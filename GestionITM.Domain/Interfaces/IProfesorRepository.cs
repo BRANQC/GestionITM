@@ -13,7 +13,7 @@ namespace GestionITM.Domain.Interfaces
         Task<Profesor?> ObtenerPorIdAsync(int id);
         Task AgregarAsync(Profesor profesor);
 
-        // BONUS Nivel 5: verificar si ya existe un profesor con ese email
+        // BONUS Nivel 5
         Task<bool> ExisteEmailAsync(string email);
     }
 }

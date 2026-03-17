@@ -8,9 +8,9 @@
 Se desarrolló el ciclo de vida completo de la entidad `Profesor` siguiendo la arquitectura **N-Capas (Clean Architecture)** del proyecto GestionITM, respetando estrictamente la separación de responsabilidades entre capas.
 
 La analogía del profesor aplica perfectamente aquí:
-- 🧑‍💼 **Controlador** = el mesero (recibe el pedido y lo pasa)
-- 👨‍🍳 **Servicio** = el chef (aplica las reglas de negocio)
-- 📦 **Repositorio** = el almacenista (accede a los datos)
+- **Controlador** = el mesero (recibe el pedido y lo pasa)
+- **Servicio** = el chef (aplica las reglas de negocio)
+- **Repositorio** = el almacenista (accede a los datos)
 
 ---
 
@@ -132,7 +132,16 @@ Se puede verificar la tabla `dbo.Profesores` con sus columnas en SQL Server Mana
 
 ---
 
-### 2. POST exitoso en Swagger (201 Created)
+
+### 2. Primer dato a ingresar (Try it out swagger)
+
+Se registró el profesor **Carlos Ramírez** con especialidad **Arquitectura**.
+
+![Primer dato ingresado](docs/img/primer dato.png)
+
+---
+
+### 3. POST exitoso en Swagger (201 Created)
 
 Se registró el profesor **Carlos Ramírez** con especialidad **Arquitectura**.
 La API respondió con código `201 Created` y el objeto creado en formato JSON.
@@ -141,7 +150,7 @@ La API respondió con código `201 Created` y el objeto creado en formato JSON.
 
 ---
 
-### 3. Middleware capturando el error (500 Internal Server Error)
+### 4. Middleware capturando el error (500 Internal Server Error)
 
 Se envió `"nombre": "Error"` para activar el `throw new Exception("Error de prueba")` en el servicio.
 El `ExceptionMiddleware` capturó la excepción y devolvió el JSON estandarizado con código `500`.
@@ -150,7 +159,26 @@ El `ExceptionMiddleware` capturó la excepción y devolvió el JSON estandarizad
 
 ---
 
-### 4. Perfil Senior Detectado en consola
+### 5. Email duplicado — 400 Bad Request
+
+Se intentó registrar un profesor con un email ya existente en la base de datos.
+El `ExceptionMiddleware` capturó la `ArgumentException` y devolvió código `400 Bad Request`.
+
+![Email duplicado 400 Bad Request](docs/img/swagger_error_400.png)
+
+---
+---
+
+### 6. GET exitoso en Swagger (200 OK)
+
+Se consultaron todos los profesores registrados.
+La API respondió con código `200 OK` y la lista de profesores sin exponer `FechaContratacion`.
+
+![GET exitoso en Swagger](docs/img/swagger_get_exitoso.png)
+
+---
+
+### 7. Perfil Senior Detectado en consola
 
 Al registrar un profesor con `"especialidad": "Arquitectura"`, el servicio imprimió automáticamente en la consola el mensaje de log requerido.
 
